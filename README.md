@@ -1,4 +1,6 @@
-# Wall Thing: Debian Chromium Kiosk on Spotify Car Thing (superbird)
+# Auto Thing: Android Auto (OpenAuto) on Spotify Car Thing (superbird)
+
+I've just started this, nothing is done yet :)
 
 This is a prebuilt image of Debian 13 (Trixie) for the Spotify Car Thing, aka superbird.
 It combines the stock kernel with a debian rootfs, and launches a fullscreen Chromium kiosk. I like to use it with Home Assistant.

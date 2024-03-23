@@ -26,7 +26,9 @@ PACKAGES="$PACKAGES xserver-xorg-core xserver-xorg-video-fbdev xterm xinit x11-x
 # xorg input
 PACKAGES="$PACKAGES xserver-xorg-input-evdev libinput-bin xserver-xorg-input-libinput xinput"
 # additional required tools
-PACKAGES="$PACKAGES fbset tigervnc-scraping-server"
+PACKAGES="$PACKAGES fbset"
+# packages needed to build OpenAuto
+PACKAGES="$PACKAGES libboost-all-dev libusb-1.0.0-dev libssl-dev cmake libprotobuf-dev protobuf-c-compiler protobuf-compiler libqt5multimedia5 libqt5multimedia5-plugins libqt5multimediawidgets5 qtmultimedia5-dev libqt5bluetooth5 libqt5bluetooth5-bin qtconnectivity5-dev pulseaudio librtaudio-dev"
 
 # NOTE: we cannot install chromium at at the debootstrap stage
 #   so we install chromium and other packages in a separate stage using chroot
@@ -175,20 +177,16 @@ cp ${FILES_DATA}/etc/inittab "${INSTALL_PATH}/etc/inittab"
 mkdir -p "${INSTALL_PATH}/lib/modules"
 cp -r "${SYS_PATH}/lib/modules/${KERNEL_VERSION}" "${INSTALL_PATH}/lib/modules/"
 
-
 ################################################ Modify system_a for Utility Mode ################################################
 
 cp ${FILES_SYS}/etc/fstab ${SYS_PATH}/etc/
 cp ${FILES_SYS}/etc/inittab ${SYS_PATH}/etc/
-cp ${FILES_SYS}/etc/init.d/S49usbgadget ${SYS_PATH}/etc/init.d/
-chmod +x ${SYS_PATH}/etc/init.d/S49usbgadget
 
 
 ################################################ Done with system_a, unmount it ################################################
 
 umount "$SYS_PATH"
 rmdir "$SYS_PATH"
-
 
 ################################################ Setup Xorg ################################################
 
@@ -200,7 +198,6 @@ cp ${FILES_DATA}/etc/X11/xorg.conf.portrait "${INSTALL_PATH}/etc/X11/xorg.conf"
 # 	this is particularly evident when in landscape mode, as only one of the two inputs is correctly transformed for the rotation
 # 	these files were installed by xserver-xorg-input-libinput
 in_target mv /usr/share/X11/xorg.conf.d /usr/share/X11/xorg.conf.d.bak
-
 
 ################################################ Setup Hostname and Hosts ################################################
 
@@ -253,15 +250,8 @@ set -e
 
 ################################################ Setup scripts and services ################################################
 
-install_script setup_usbgadget.sh
-install_service usbgadget.service
-
 install_script setup_display.sh
 install_script clear_display.sh
-
-install_script vnc_passwd
-install_script setup_vnc.sh
-install_service vnc.service
 
 install_script start_buttons.sh
 install_script buttons_app.py
@@ -271,12 +261,18 @@ install_service buttons.service
 install_script setup_backlight.sh
 install_service backlight.service
 
-install_script start_chromium.sh
-install_script chromium_settings.sh
-install_service chromium.service
+install_script start_openauto.sh
+install_service openauto.service
 
 in_target chown -R "$USER_NAME" /scripts
 
+
+################################################ Clone the needed repos ################################################
+
+in_target git clone -b master https://github.com/Giorgio68/aasdk /home/${USER_NAME}/aasdk
+in_target git clone -b development https://github.com/humeman/openauto /home/${USER_NAME}/openauto 
+in_target chown -R "$USER_NAME" /home/${USER_NAME}/aasdk
+in_target chown -R "$USER_NAME" /home/${USER_NAME}/openauto
 
 ################################################ Cleanup systemd and timezone stuff ################################################
 
