@@ -28,7 +28,7 @@ PACKAGES="$PACKAGES xserver-xorg-input-evdev libinput-bin xserver-xorg-input-lib
 # additional required tools
 PACKAGES="$PACKAGES fbset"
 # packages needed to build OpenAuto
-PACKAGES="$PACKAGES libboost-all-dev libusb-1.0.0-dev libssl-dev cmake libprotobuf-dev protobuf-c-compiler protobuf-compiler libqt5multimedia5 libqt5multimedia5-plugins libqt5multimediawidgets5 qtmultimedia5-dev libqt5bluetooth5 libqt5bluetooth5-bin qtconnectivity5-dev pulseaudio librtaudio-dev"
+PACKAGES="$PACKAGES libboost-all-dev libusb-1.0-0-dev libssl-dev cmake libprotobuf-dev protobuf-c-compiler protobuf-compiler libqt5multimedia5 libqt5multimedia5-plugins libqt5multimediawidgets5 qtmultimedia5-dev libqt5bluetooth5 libqt5bluetooth5-bin qtconnectivity5-dev pulseaudio librtaudio-dev"
 
 # NOTE: we cannot install chromium at at the debootstrap stage
 #   so we install chromium and other packages in a separate stage using chroot
